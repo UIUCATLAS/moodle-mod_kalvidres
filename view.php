@@ -27,21 +27,21 @@ $id = optional_param('id', 0, PARAM_INT);
 
 // Retrieve module instance.
 if (empty($id)) {
-    print_error('invalidid', 'kalvidres');
+    throw new \moodle_exception('invalidid', 'kalvidres');
 }
 
 if (!empty($id)) {
 
     if (!$cm = get_coursemodule_from_id('kalvidres', $id)) {
-        print_error('invalidcoursemodule');
+        throw new \moodle_exception('invalidcoursemodule');
     }
 
     if (!$course = $DB->get_record('course', array('id' => $cm->course))) {
-        print_error('coursemisconf');
+        throw new \moodle_exception('coursemisconf');
     }
 
     if (!$kalvidres = $DB->get_record('kalvidres', array("id" => $cm->instance))) {
-        print_error('invalidid', 'kalvidres');
+        throw new \moodle_exception('invalidid', 'kalvidres');
     }
 }
 
@@ -66,14 +66,8 @@ $event->trigger();
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
+$PAGE->requires->css('/mod/kalvidres/styles.css');
 echo $OUTPUT->header();
-
-$description = format_module_intro('kalvidres', $kalvidres, $cm->id);
-if (!empty($description)) {
-    echo $OUTPUT->box_start('generalbox');
-    echo $description;
-    echo $OUTPUT->box_end();
-}
 
 $renderer = $PAGE->get_renderer('mod_kalvidres');
 
